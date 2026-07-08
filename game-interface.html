@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>脑中神探</title>
   <link rel="preload" href="99-附件/assets/fonts/fusion-pixel-12px-monospaced-zh_hans.ttf.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="99-附件/assets/audio/ChongErFei.mp3" as="audio" type="audio/mpeg">
   <style>
     @font-face {
       font-family: "Fusion Pixel Game";
       src: url("99-附件/assets/fonts/fusion-pixel-12px-monospaced-zh_hans.ttf.woff2") format("woff2");
       font-weight: 400;
       font-style: normal;
-      font-display: swap;
+      font-display: block;
     }
 
     :root {
@@ -204,6 +205,12 @@
       height: 100dvh;
       min-height: 640px;
       margin: 0 auto;
+      visibility: hidden;
+    }
+
+    .game-shell.fonts-active {
+      visibility: visible;
+    }
       padding: 18px;
       display: grid;
       grid-template-columns: minmax(520px, 1fr) minmax(500px, 1.02fr);
@@ -4410,8 +4417,27 @@
       }
     }
   </style>
+  <script>document.documentElement.classList.add("fonts-loading");</script>
 </head>
 <body>
+  <script>
+    if (document.fonts) {
+      document.fonts.load("1em 'Fusion Pixel Game'").then(function() {
+        var el = document.querySelector(".game-shell");
+        if (el) el.classList.add("fonts-active");
+      })["catch"](function() {
+        var el = document.querySelector(".game-shell");
+        if (el) el.classList.add("fonts-active");
+      });
+      setTimeout(function() {
+        var el = document.querySelector(".game-shell");
+        if (el) el.classList.add("fonts-active");
+      }, 3000);
+    } else {
+      var el = document.querySelector(".game-shell");
+      if (el) el.classList.add("fonts-active");
+    }
+  </script>
   <main class="game-shell" aria-label="案件调查界面">
     <section class="left-stack">
       <article class="panel display-panel" aria-label="显示区域">
@@ -7768,7 +7794,7 @@
       return `
         <div class="seven-sin-terminal" data-seven-sin="${escapeAttr(key)}">
           <label class="seven-sin-input-row">
-            <input class="seven-sin-input${correct ? " is-correct" : ""}" type="text" inputmode="text" autocomplete="off" spellcheck="false" maxlength="${profile.answer.length}" value="${escapeAttr(value)}" data-seven-sin-input="${escapeAttr(key)}" aria-label="${escapeAttr(people[key]?.name || key)}">
+            <input class="seven-sin-input${correct ? " is-correct" : ""}" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="${escapeAttr(value)}" data-seven-sin-input="${escapeAttr(key)}" aria-label="${escapeAttr(people[key]?.name || key)}">
             <span class="seven-sin-hint">英文大写</span>
           </label>
           <p class="seven-sin-line">${escapeHtml(profile.line)}</p>
@@ -7802,7 +7828,7 @@
       const key = input?.dataset?.sevenSinInput;
       const profile = sevenSinProfiles[key];
       if (!profile) return;
-      const value = String(input.value || "").toUpperCase().replace(/[^A-Z]/g, "").slice(0, profile.answer.length);
+      const value = String(input.value || "").toUpperCase().replace(/[^A-Z]/g, "");
       input.value = value;
       sevenSinAnswers()[key] = value;
       input.classList.toggle("is-correct", value === profile.answer);
@@ -11541,6 +11567,21 @@
       });
     }
 
+    function preloadCueAudio(key) {
+      const src = CUE_AUDIO[key];
+      if (!src) return;
+      if (!cueAudio) {
+        cueAudio = new Audio();
+        cueAudio.volume = 0.56;
+      }
+      if (cueAudio.dataset.src !== src) {
+        cueAudio.src = src;
+        cueAudio.dataset.src = src;
+      }
+      cueAudio.preload = "auto";
+      cueAudio.load();
+    }
+
     function pauseCueAudio() {
       if (!cueAudio) return;
       cueAudio.pause();
@@ -12917,6 +12958,7 @@
       document.body.classList.remove("seven-sins-complete-glitch");
     });
 
+    preloadCueAudio("chongerfei");
     bootGame();
   </script>
 </body>
