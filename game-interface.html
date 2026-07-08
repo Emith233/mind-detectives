@@ -4538,7 +4538,7 @@
         </div>
       </div>
       <div class="title-menu">
-        <button class="title-button" id="title-start" type="button">开始游戏</button>
+        <button class="title-button" id="title-start" type="button">开始新游戏</button>
         <button class="title-button" id="title-continue" type="button">继续游戏</button>
       </div>
     </div>
@@ -7483,6 +7483,7 @@
     let runClueKeys = [];
     let persistentClueKeys = [];
     let consumedClueKeys = [];
+    let completedAnalysisKeys = [];
     let runPersonKeys = [];
     let persistentPersonKeys = [];
     let runMemoryKeys = [];
@@ -8996,6 +8997,17 @@
       if (!clues[key] || hasClueInfo(key) || hasConsumedClue(key)) return false;
       runClueKeys.push(key);
       if (text) appendStoryLine(text, { info: true });
+      return true;
+    }
+
+    function addAnalysisResultClue(key, options = {}) {
+      if (!clues[key] || hasClueInfo(key)) return false;
+      consumedClueKeys = consumedClueKeys.filter((item) => item !== key);
+      if (options.persist) {
+        persistentClueKeys = [...persistentClueKeys.filter((item) => item !== key), key];
+      } else {
+        runClueKeys = [...runClueKeys.filter((item) => item !== key), key];
+      }
       return true;
     }
 
@@ -11678,6 +11690,11 @@
       if (!consumedClueKeys.includes(key)) consumedClueKeys.push(key);
     }
 
+    function analysisResultAlreadyCompleted(result) {
+      if (!result?.resultKey || !Array.isArray(result.keys)) return false;
+      return hasClueInfo(result.resultKey) || result.keys.every((key) => hasConsumedClue(key));
+    }
+
     const analysisCombinations = [
       {
         keys: ["threatenedSuicide", "victimMayKnowSomething"],
@@ -11759,9 +11776,27 @@
       if (!hasClueInfo(key) || key === "people" || key === "memories") return false;
       return analysisCombinations.some((combination) => {
         if (!combination.keys.includes(key)) return false;
-        if (hasClueInfo(combination.resultKey)) return false;
+        if (analysisResultAlreadyCompleted(combination)) return false;
         return true;
       });
+    }
+
+    function analysisResultConsumedByCompletedAnalysis(key) {
+      return analysisCombinations.some((combination) => {
+        return combination.keys.includes(key) && combination.keys.every((item) => hasConsumedClue(item));
+      });
+    }
+
+    function repairMissingAnalysisResults(options = {}) {
+      const repairedKeys = [];
+      analysisCombinations.forEach((combination) => {
+        if (!combination.resultKey || !combination.keys?.length) return;
+        if (!combination.keys.every((key) => hasConsumedClue(key))) return;
+        if (hasClueInfo(combination.resultKey)) return;
+        if (analysisResultConsumedByCompletedAnalysis(combination.resultKey)) return;
+        if (addAnalysisResultClue(combination.resultKey, options)) repairedKeys.push(combination.resultKey);
+      });
+      return repairedKeys;
     }
 
     function startClueAnalysis(options = {}) {
@@ -11809,9 +11844,25 @@
         saveGame();
         return;
       }
+      const addedResult = addAnalysisResultClue(result.resultKey);
+      if (!addedResult && !hasClueInfo(result.resultKey)) {
+        appendStoryLine("分析结果暂时无法记录下来。");
+        analysisState.selected = [];
+        renderClueList();
+        markSelectedSubmission();
+        refreshSubmissionPromptDisplay();
+        saveGame();
+        return;
+      }
       consumeClueInfo(selected[0]);
       consumeClueInfo(selected[1]);
-      const gained = applyGains([{ type: "clue", key: result.resultKey, text: `获得线索：${clues[result.resultKey].name}` }]);
+      const gained = addedResult
+        ? [{ type: "clue", key: result.resultKey, text: `获得线索：${clues[result.resultKey].name}` }]
+        : [];
+      if (addedResult) {
+        flashClueEntry(result.resultKey);
+        renderClueList();
+      }
       appendStoryLine(result.successText, { gains: gained });
       previewGainedClue(gained);
       analysisState.selected = [];
@@ -12715,6 +12766,12 @@
 
       if (!wasCompleted) {
         savedRecords = savedRecords.filter((record) => record.persistent);
+        // 未完成流程重演：合成结果保留 + 已消耗材料恢复
+        [...new Set([...runClueKeys, ...consumedClueKeys])].forEach((key) => {
+          if (clues[key] && !persistentClueKeys.includes(key)) {
+            persistentClueKeys.push(key);
+          }
+        });
         consumedClueKeys = [];
         renderRecords();
       }
@@ -12723,6 +12780,7 @@
       runPersonKeys = [];
       runMemoryKeys = [];
       runEncounteredMemoryKeys = [];
+      if (wasCompleted) repairMissingAnalysisResults({ persist: true });
 
       if (shouldReplaySecondLoopPeihuan) {
         persistentStoryFlags.secondLoopActive = true;
@@ -12869,11 +12927,9 @@
         runClueKeys = Array.isArray(saved.runClueKeys) ? saved.runClueKeys : [];
         persistentClueKeys = Array.isArray(saved.persistentClueKeys) ? saved.persistentClueKeys : [];
         consumedClueKeys = Array.isArray(saved.consumedClueKeys) ? saved.consumedClueKeys : [];
-        if (consumedClueKeys.includes("revengeForSumian")) {
-          consumedClueKeys = consumedClueKeys.filter((key) => key !== "revengeForSumian");
-          if (!runClueKeys.includes("revengeForSumian") && !persistentClueKeys.includes("revengeForSumian")) {
-            runClueKeys = [...runClueKeys, "revengeForSumian"];
-          }
+        // 丢失线索恢复：已通关但为苏眠复仇不在任何线索列表中时补回
+        if (savedCompletedOnce && clues["revengeForSumian"] && !runClueKeys.includes("revengeForSumian") && !persistentClueKeys.includes("revengeForSumian") && !consumedClueKeys.includes("revengeForSumian")) {
+          persistentClueKeys.push("revengeForSumian");
         }
         if (Array.isArray(saved.runPersonKeys) || Array.isArray(saved.persistentPersonKeys)) {
           runPersonKeys = Array.isArray(saved.runPersonKeys) ? saved.runPersonKeys : [];
@@ -12912,6 +12968,8 @@
         analysisState = saved.analysisState || null;
         selectedSubmission = saved.selectedSubmission || null;
         gameEnded = Boolean(saved.gameEnded);
+        const repairedAnalysisKeys = repairMissingAnalysisResults({ persist: completedOnce });
+        if (repairedAnalysisKeys.length > 0) saveGame();
         const restoredStuckDetectiveSelection = restoreStuckDetectiveSelectionIfNeeded();
         const reopenedDeductionEntry = restoreSkippedDeductionEntryIfNeeded();
         renderClueList();
