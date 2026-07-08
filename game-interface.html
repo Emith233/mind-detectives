@@ -3723,10 +3723,10 @@
         width: 100%;
         padding: 8px;
         grid-template-columns: 1fr;
-        grid-template-rows: minmax(0, 38svh) minmax(0, 1fr);
-        height: 100svh;
-        min-height: 0;
-        overflow: hidden;
+        grid-template-rows: auto auto;
+        height: auto;
+        min-height: 100svh;
+        overflow: visible;
       }
 
       .left-stack {
@@ -3762,8 +3762,8 @@
 
       .text-panel {
         min-height: 0;
-        height: 100%;
-        max-height: 100%;
+        height: clamp(480px, 58svh, 620px);
+        max-height: none;
         grid-template-rows: auto minmax(0, 1fr) 52px;
       }
 
@@ -3904,12 +3904,12 @@
     @media (max-width: 720px) {
       .game-shell {
         width: 100vw;
-        height: 100svh;
-        min-height: 0;
+        height: auto;
+        min-height: 100svh;
         padding: 6px;
-        grid-template-rows: minmax(0, 32svh) minmax(0, 1fr);
+        grid-template-rows: auto auto;
         gap: 8px;
-        overflow: hidden;
+        overflow: visible;
       }
 
       .left-stack {
@@ -4155,8 +4155,8 @@
 
       .text-panel {
         min-height: 0;
-        height: 100%;
-        max-height: 100%;
+        height: clamp(430px, 58svh, 560px);
+        max-height: none;
         grid-template-rows: auto minmax(0, 1fr) 52px;
       }
 
