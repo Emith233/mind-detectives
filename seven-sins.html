@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>微聊</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body {
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:"Microsoft YaHei","PingFang SC","Helvetica Neue",Arial,sans-serif;
+  font-size:14px;
+  background:#eef1f2;
+  color:#333;
+  user-select:none;
+}
+button, textarea, input { font:inherit; }
+.wx-container {
+  width:min(1180px, calc(100% - 36px));
+  height:calc(100% - 36px);
+  margin:18px auto;
+  display:flex;
+  background:#fff;
+  border:1px solid #d9dede;
+  box-shadow:0 12px 36px rgba(42,55,55,.12);
+}
+.wx-side {
+  width:288px;
+  min-width:288px;
+  display:flex;
+  flex-direction:column;
+  background:#f6f8f8;
+  color:#4b5758;
+  border-right:1px solid #dfe4e4;
+  overflow:hidden;
+}
+.wx-side .header {
+  height:58px;
+  padding:14px 16px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-shrink:0;
+  background:#fff;
+  border-bottom:1px solid #e5e9e9;
+}
+.wx-side .logo {
+  width:24px;
+  height:24px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#07c160;
+  border-radius:4px;
+  color:#fff;
+  font-size:14px;
+  font-weight:700;
+}
+.wx-side .title {
+  flex:1;
+  color:#354142;
+  font-size:16px;
+  font-weight:500;
+}
+.wx-side .icons {
+  display:flex;
+  gap:4px;
+}
+.wx-side .icons button,
+.chat-header button,
+.moments-head button {
+  border:0;
+  background:transparent;
+  color:#8b9999;
+  cursor:pointer;
+}
+.wx-side .icons button {
+  width:30px;
+  height:30px;
+  border-radius:4px;
+  font-size:16px;
+}
+.wx-side .icons button:hover { background:#f0f5f4; color:#3c6a62; }
+.search {
+  padding:8px 12px;
+  flex-shrink:0;
+}
+.search input {
+  width:100%;
+  padding:7px 10px;
+  border:1px solid #e1e7e6;
+  border-radius:4px;
+  outline:none;
+  background:#edf1f1;
+  color:#526061;
+  font-size:12px;
+}
+.chat-list {
+  flex:1;
+  min-height:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+}
+.chat-list::-webkit-scrollbar,
+.chat-body::-webkit-scrollbar,
+.moments-list::-webkit-scrollbar { width:5px; }
+.chat-list::-webkit-scrollbar-thumb,
+.chat-body::-webkit-scrollbar-thumb,
+.moments-list::-webkit-scrollbar-thumb { background:#cbd5d4; border-radius:3px; }
+.wx-chat-item {
+  position:relative;
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px 14px;
+  border:0;
+  border-bottom:1px solid #edf0f0;
+  background:transparent;
+  text-align:left;
+  cursor:pointer;
+}
+.wx-chat-item:hover { background:#eef4f3; }
+.wx-chat-item.active { background:#dceee9; }
+.avatar {
+  width:42px;
+  height:42px;
+  flex:0 0 auto;
+  border-radius:4px;
+  background-size:cover;
+  background-position:center;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.04);
+}
+.wx-chat-item .info {
+  flex:1;
+  min-width:0;
+}
+.wx-chat-item .top {
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.wx-chat-item .name {
+  color:#405051;
+  font-size:14px;
+}
+.wx-chat-item .time {
+  margin-left:auto;
+  color:#b0baba;
+  font-size:11px;
+  white-space:nowrap;
+}
+.wx-chat-item .preview {
+  display:block;
+  max-width:100%;
+  margin-top:2px;
+  color:#8f9c9c;
+  font-size:12px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.red-dot {
+  position:absolute;
+  top:11px;
+  left:47px;
+  width:9px;
+  height:9px;
+  display:none;
+  border-radius:999px;
+  background:#fa5151;
+  box-shadow:0 0 0 2px #fff;
+}
+.wx-chat-item.unread .red-dot { display:block; }
+.wx-main {
+  flex:1;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  background:#f4f7f6;
+}
+.chat-header {
+  height:58px;
+  padding:14px 20px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-shrink:0;
+  background:#fff;
+  border-bottom:1px solid #e1e6e5;
+}
+.chat-header .name {
+  color:#333;
+  font-size:15px;
+  font-weight:500;
+}
+.chat-header .hint {
+  color:#999;
+  font-size:11px;
+}
+.chat-header .spacer { flex:1; }
+.chat-header button {
+  padding:5px 10px;
+  border:1px solid #d8e1df;
+  border-radius:4px;
+  background:#fff;
+  color:#49645f;
+}
+.chat-header button[hidden] {
+  display:none;
+}
+.chat-header button:hover { background:#f2f8f6; }
+.chat-body {
+  flex:1;
+  min-height:0;
+  overflow-y:auto;
+  padding:20px 30px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  background:#f4f7f6;
+}
+.wx-empty-chat {
+  margin:auto;
+  color:#a9b4b3;
+  font-size:13px;
+  letter-spacing:1px;
+  line-height:1.9;
+  text-align:center;
+}
+.wx-time-sep {
+  align-self:center;
+  padding:8px 0 4px;
+  color:#b0b0b0;
+  font-size:12px;
+  line-height:1;
+}
+.wx-episode-sep {
+  align-self:center;
+  margin:4px 0 2px;
+  padding:11px 22px;
+  border:1px solid rgba(64,106,146,.18);
+  border-radius:6px;
+  background:rgba(255,255,255,.76);
+  color:#6f7d7d;
+  font-size:13px;
+  letter-spacing:.03em;
+  box-shadow:0 1px 3px rgba(40,60,60,.05);
+}
+.wx-episode-sep::before,
+.wx-episode-sep::after {
+  content:"";
+  display:inline-block;
+  width:18px;
+  height:1px;
+  margin:0 10px 4px;
+  background:#d8e0df;
+}
+.wx-msg {
+  max-width:min(68%, 560px);
+  display:flex;
+  gap:8px;
+  align-items:flex-start;
+}
+.wx-msg.in { align-self:flex-start; }
+.wx-msg.out {
+  align-self:flex-end;
+  max-width:min(70%, 600px);
+}
+.wx-msg .avatar {
+  width:36px;
+  height:36px;
+}
+.wx-msg .bubble {
+  max-width:34em;
+  padding:9px 14px;
+  position:relative;
+  color:#333;
+  font-size:14px;
+  line-height:1.7;
+  word-break:break-word;
+  overflow-wrap:anywhere;
+  text-align:left;
+  white-space:pre-line;
+  box-shadow:0 1px 2px rgba(0,0,0,.04);
+}
+.wx-msg.in .bubble {
+  background:#fff;
+  border-radius:0 6px 6px 6px;
+}
+.wx-msg.out .bubble {
+  background:#95ec69;
+  border-radius:6px 0 6px 6px;
+}
+.chat-input {
+  flex-shrink:0;
+  padding:10px 20px;
+  display:flex;
+  align-items:flex-end;
+  gap:10px;
+  background:#fff;
+  border-top:1px solid #e1e6e5;
+}
+.toolbar {
+  display:flex;
+  gap:4px;
+}
+.toolbar button {
+  width:30px;
+  height:30px;
+  border:0;
+  border-radius:4px;
+  background:transparent;
+  color:#666;
+  font-size:18px;
+}
+.toolbar button:hover { background:#e0e0e0; }
+.chat-input textarea {
+  flex:1;
+  min-width:0;
+  min-height:36px;
+  max-height:80px;
+  padding:9px 12px;
+  border:0;
+  border-radius:4px;
+  outline:none;
+  resize:none;
+  background:#fff;
+  color:#333;
+  font-family:inherit;
+  font-size:14px;
+  line-height:1.5;
+}
+.chat-input textarea:disabled {
+  color:#b6c0bf;
+  background:#fff;
+}
+.chat-input textarea[readonly] {
+  cursor:default;
+}
+.send-btn {
+  padding:8px 22px;
+  border:0;
+  border-radius:4px;
+  background:#07c160;
+  color:#fff;
+  cursor:pointer;
+  font-size:13px;
+  white-space:nowrap;
+}
+.send-btn:hover:not(:disabled) { background:#06ad56; }
+.send-btn:disabled {
+  background:#b0b0b0;
+  cursor:default;
+}
+.moments-modal {
+  position:fixed;
+  inset:0;
+  z-index:20;
+  display:none;
+  place-items:center;
+  padding:22px;
+  background:rgba(0,0,0,.42);
+}
+.moments-modal.open { display:grid; }
+.moments-window {
+  width:min(760px, 100%);
+  max-height:min(780px, 92vh);
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  border-radius:8px;
+  background:#fff;
+  box-shadow:0 20px 60px rgba(0,0,0,.26);
+}
+.moments-head {
+  padding:14px 18px;
+  display:flex;
+  align-items:center;
+  border-bottom:1px solid #edf0f0;
+}
+.moments-head strong {
+  flex:1;
+  font-size:16px;
+}
+.moments-head button {
+  color:#667;
+  font-size:18px;
+}
+.moments-list {
+  overflow-y:auto;
+  padding:8px 0 14px;
+}
+.moment {
+  display:flex;
+  gap:12px;
+  padding:16px 20px;
+  border-bottom:1px solid #edf0f0;
+}
+.moment .avatar {
+  width:40px;
+  height:40px;
+}
+.moment-main {
+  flex:1;
+  min-width:0;
+}
+.moment-name {
+  margin-bottom:6px;
+  color:#406a92;
+  font-weight:600;
+}
+.moment-text {
+  color:#333;
+  line-height:1.7;
+  white-space:pre-line;
+}
+.moment-time {
+  margin-top:8px;
+  color:#9aa5a5;
+  font-size:12px;
+}
+.moment-photos {
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  margin-top:8px;
+}
+.moment-photos img {
+  width:92px;
+  height:92px;
+  object-fit:cover;
+  border-radius:4px;
+  background:#eee;
+}
+@media (max-width:760px) {
+  html, body {
+    height:100%;
+    overflow:hidden;
+  }
+  .wx-container {
+    width:100%;
+    height:100dvh;
+    margin:0;
+    border:0;
+    box-shadow:none;
+  }
+  .wx-side {
+    width:82px;
+    min-width:82px;
+  }
+  .wx-side .header {
+    padding:12px 8px;
+    justify-content:center;
+  }
+  .wx-side .title,
+  .wx-side .icons,
+  .search,
+  .wx-chat-item .info { display:none; }
+  .wx-chat-item {
+    justify-content:center;
+    padding:12px 8px;
+  }
+  .red-dot {
+    left:50px;
+  }
+  .chat-header {
+    height:52px;
+    padding:12px 10px;
+  }
+  .chat-header button {
+    padding:4px 7px;
+    font-size:12px;
+  }
+  .chat-body {
+    padding:14px 10px;
+    gap:14px;
+  }
+  .wx-msg,
+  .wx-msg.out {
+    max-width:88%;
+  }
+  .wx-msg .bubble {
+    max-width:100%;
+    font-size:13px;
+  }
+  .chat-input {
+    padding:8px 10px;
+    gap:6px;
+  }
+  .toolbar { display:none; }
+  .send-btn {
+    padding:8px 14px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="wx-container">
+  <aside class="wx-side">
+    <div class="header">
+      <div class="logo">微</div>
+      <div class="title">微聊</div>
+    </div>
+    <div class="search"><input type="text" placeholder="搜索"></div>
+    <div class="chat-list">
+      <button class="wx-chat-item active" type="button" data-chat="file">
+        <span class="red-dot"></span>
+        <span class="avatar" style="background-image:url('99-附件/assets/wechat/文件传输助手.jpg')"></span>
+        <span class="info">
+          <span class="top"><span class="name">文件传输助手</span><span class="time" data-time="file">23:08</span></span>
+          <span class="preview" data-preview="file">总是想起一个人……</span>
+        </span>
+      </button>
+      <button class="wx-chat-item" type="button" data-chat="susu">
+        <span class="red-dot"></span>
+        <span class="avatar" style="background-image:url('99-附件/assets/wechat/苏苏.jpg')"></span>
+        <span class="info">
+          <span class="top"><span class="name">苏苏</span><span class="time" data-time="susu"></span></span>
+          <span class="preview" data-preview="susu">暂无聊天记录</span>
+        </span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="wx-main">
+    <div class="chat-header">
+      <span class="name" id="chatName">文件传输助手</span>
+      <span class="hint" id="typingHint"></span>
+      <span class="spacer"></span>
+      <button type="button" id="openMomentsTop" hidden>朋友圈</button>
+    </div>
+    <div class="chat-body" id="chatBody"></div>
+    <div class="chat-input">
+      <div class="toolbar" aria-hidden="true">
+        <button type="button">☺</button>
+        <button type="button">+</button>
+      </div>
+      <textarea id="chatInput" rows="1" placeholder="输入消息"></textarea>
+      <button class="send-btn" type="button" id="sendButton">记录</button>
+    </div>
+  </main>
+</div>
+
+<div class="moments-modal" id="momentsModal" aria-hidden="true">
+  <div class="moments-window">
+    <div class="moments-head">
+      <strong>朋友圈</strong>
+      <button type="button" id="closeMoments">×</button>
+    </div>
+    <div class="moments-list" id="momentsList"></div>
+  </div>
+</div>
+
+  <audio id="endingAudio" src="99-附件/assets/audio/结尾.mp3" preload="none"></audio>
+
+<script>
+const SAVE_KEY = "brain-detective-wechat-e03-v1";
+const avatars = {
+  file: "99-附件/assets/wechat/文件传输助手.jpg",
+  susu: "99-附件/assets/wechat/苏苏.jpg",
+  shuyue: "99-附件/assets/wechat/舒阅.jpg"
+};
+const times = {
+  first: "7月6日 21:16",
+  second: "7月7日 23:08",
+  final: "7月8日 21:37"
+};
+const initialState = {
+  activeChat: "file",
+  recorded: false,
+  recordedAt: 0,
+  susuStarted: false,
+  susuComplete: false,
+  susuStep: 0,
+  readyChoice: "",
+  draftChoice: "",
+  choiceTyping: false,
+  susuUnread: false,
+  typing: false,
+  chats: {
+    file: [
+      { type:"time", text:times.first },
+      { type:"out", text:"车祸醒来以后，我丢失了不少记忆，医生说也许有漫长的恢复期。但我却开始不时地想起往事，想起母亲在门口的啜泣，想起哥哥让我快跑时的神情。每当深夜来临，我闻着病房里消毒水的气味，总会反问自己当时做的对不对。我的双手沾满鲜血，这究竟是我迫不得已的反抗，是我为母亲的复仇，还是我幻想中邪恶的父亲代替了现实？" },
+      { type:"time", text:times.second },
+      { type:"out", text:"总是想起一个人，印象里我应该喊他哥哥，甚至当我上大学时好像还会经常喊起他的名字。但是我的哥哥在童年的那场大火里已经遇难了才是……" }
+    ],
+    susu: []
+  }
+};
+const susuFlow = [
+  { incoming:["哇！你刚刚听到没，好大的雷声！"], choice:"我听到啦 苏苏姐" },
+  { incoming:["太吓人了…刚刚好像还打闪了。"], choice:"苏苏姐居然害怕打雷。" },
+  { incoming:["这，，，每个人害怕的东西都不一样嘛！我是从小就害怕打雷，童年阴影这是", "咋样咋样，我出院以后你还好不？"], choice:"还好，最近在逐渐恢复记忆……" },
+  { incoming:["那就好……啊对……", "我这次跟你聊天是想跟你说件事情", "实在不好意思小阅，出院那天我碰到阿姨了……"], choice:"我奶奶？" },
+  { incoming:["对，阿姨跟我聊了很多你的事，包括……你被她领养这件事。"], choice:"她居然说了这么多……" },
+  { incoming:["嗯嗯，我真正抱歉的事在后面，，，", "其实我去调查了你的过往，发现你的哥哥和父亲死于一场火灾……", "抱歉我总是好奇这些，老本行了，，，"], choice:"……" },
+  { incoming:[], choice:"对，我最近也总是想起这些……" },
+  { incoming:["小阅", "我想说的是，案件的调查结果一直是，你的父亲死于烟气窒息，且再无其他明显外伤", "阿姨说，她知道你跟你父亲的关系不好，你刚来的时候还总是说梦话，说自己用刀杀害了父亲，但是这些事，，，我真的查证不到", "小阅，无论你的父亲是否做错了事，不该是这样的你背负罪责走完一生……"], choice:"……" },
+  { incoming:[], choice:"苏苏姐，我的哥哥是个好人吗？" },
+  { incoming:["这个嘛……", "其实你已经有答案了不是吗？"], episode:"E-03「前行的路」" }
+];
+const moments = [
+  {
+    time:"2026-07-06 18:42",
+    text:"不知道为什么晕倒在了砀山，我的寻人之旅被迫到此为止了，还被我妈凶了一顿！！明天出院我也接着写我喜欢的小说！！！！"
+  },
+  {
+    time:"2026-06-26 13:18",
+    text:"送给自己一束花！",
+    photos:["99-附件/assets/wechat/苏苏朋友圈-绿色洋桔梗.png"]
+  },
+  {
+    time:"2026-06-16 19:50",
+    text:"给到夯！！！！",
+    photos:["99-附件/assets/wechat/奶汤面.png"]
+  },
+  {
+    time:"2026-06-08 14:30",
+    text:"到南京咯～",
+    photos:["99-附件/assets/wechat/苏苏朋友圈01.png","99-附件/assets/wechat/苏苏朋友圈02.png"]
+  }
+];
+
+const chatBody = document.querySelector("#chatBody");
+const chatName = document.querySelector("#chatName");
+const typingHint = document.querySelector("#typingHint");
+const chatInput = document.querySelector("#chatInput");
+const sendButton = document.querySelector("#sendButton");
+const momentsTopButton = document.querySelector("#openMomentsTop");
+const audio = document.querySelector("#endingAudio");
+let state = loadState();
+let incomingTimer = null;
+let replyTypingTimer = null;
+
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+function loadState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || "null");
+    if (saved && saved.chats?.file && saved.chats?.susu) {
+      return normalizeState({ ...clone(initialState), ...saved, typing:false, choiceTyping:false, draftChoice:"" });
+    }
+  } catch (error) {}
+  return normalizeState(clone(initialState));
+}
+function normalizeState(nextState) {
+  Object.values(nextState.chats || {}).forEach((messages) => {
+    messages.forEach((message) => {
+      if (typeof message.text === "string") {
+        message.text = message.text.replace("我的亲人。", "我的家人。");
+      }
+    });
+  });
+  if (nextState.activeChat !== "file" && nextState.activeChat !== "susu") nextState.activeChat = "file";
+  nextState.draftChoice = "";
+  nextState.choiceTyping = false;
+  nextState.typing = false;
+  return nextState;
+}
+function saveState() {
+  localStorage.setItem(SAVE_KEY, JSON.stringify({ ...state, typing:false, choiceTyping:false, draftChoice:"" }));
+}
+function escapeHtml(text) {
+  return String(text).replace(/[&<>"']/g, (char) => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+  })[char]);
+}
+function scrollToBottom() {
+  requestAnimationFrame(() => { chatBody.scrollTop = chatBody.scrollHeight; });
+}
+function renderMessage(message) {
+  if (message.type === "time") return `<div class="wx-time-sep">${escapeHtml(message.text)}</div>`;
+  if (message.type === "episode") return `<div class="wx-episode-sep">${escapeHtml(message.text)}</div>`;
+  if (message.type === "out") {
+    return `<div class="wx-msg out"><div class="bubble">${escapeHtml(message.text)}</div><span class="avatar" style="background-image:url('${avatars.shuyue}')"></span></div>`;
+  }
+  return `<div class="wx-msg in"><span class="avatar" style="background-image:url('${avatars.susu}')"></span><div class="bubble">${escapeHtml(message.text)}</div></div>`;
+}
+function renderChat() {
+  const messages = state.chats[state.activeChat] || [];
+  const isSusuTyping = state.activeChat === "susu" && state.typing;
+  chatName.textContent = state.activeChat === "file" ? "文件传输助手" : (isSusuTyping ? "对方正在输入……" : "苏苏");
+  typingHint.textContent = "";
+  if (momentsTopButton) momentsTopButton.hidden = state.activeChat !== "susu";
+  chatBody.innerHTML = messages.length ? messages.map(renderMessage).join("") : `<div class="wx-empty-chat">暂无聊天记录</div>`;
+  updateInput();
+  updateSidebar();
+  scrollToBottom();
+}
+function latestMessage(chatId) {
+  return [...(state.chats[chatId] || [])].reverse().find((message) => message.type === "in" || message.type === "out" || message.type === "episode");
+}
+function latestPreview(chatId) {
+  const message = latestMessage(chatId);
+  if (!message) return chatId === "susu" ? "暂无聊天记录" : "";
+  return message.text;
+}
+function latestTime(chatId) {
+  if (chatId === "file") return state.recorded ? times.final.slice(4) : "23:08";
+  if (chatId === "susu" && state.susuStarted) return times.final.slice(4);
+  return "";
+}
+function updateSidebar() {
+  document.querySelectorAll(".wx-chat-item").forEach((item) => {
+    const id = item.dataset.chat;
+    item.classList.toggle("active", id === state.activeChat);
+    item.classList.toggle("unread", id === "susu" && state.susuUnread);
+    item.querySelector(`[data-preview="${id}"]`).textContent = latestPreview(id);
+    item.querySelector(`[data-time="${id}"]`).textContent = latestTime(id);
+  });
+}
+function updateInput() {
+  if (!state.choiceTyping) chatInput.value = "";
+  chatInput.disabled = false;
+  chatInput.readOnly = false;
+  sendButton.disabled = false;
+  if (state.activeChat === "file") {
+    sendButton.textContent = "记录";
+    sendButton.disabled = state.recorded;
+    chatInput.value = "";
+    chatInput.placeholder = "";
+    chatInput.readOnly = true;
+    return;
+  }
+  sendButton.textContent = "发送";
+  if (state.readyChoice) {
+    chatInput.value = state.choiceTyping ? state.draftChoice : state.readyChoice;
+    chatInput.readOnly = true;
+    chatInput.placeholder = "";
+    sendButton.disabled = state.choiceTyping || state.typing;
+    return;
+  }
+  chatInput.placeholder = "";
+  chatInput.disabled = true;
+  sendButton.disabled = true;
+}
+function addMessage(chatId, message) {
+  state.chats[chatId].push(message);
+  if (chatId === "susu" && state.activeChat !== "susu" && (message.type === "in" || message.type === "episode")) {
+    state.susuUnread = true;
+  }
+  saveState();
+  renderChat();
+}
+function switchChat(id) {
+  state.activeChat = id;
+  if (id === "susu") state.susuUnread = false;
+  saveState();
+  renderChat();
+}
+function startRecord() {
+  if (state.recorded) return;
+  state.recorded = true;
+  state.recordedAt = Date.now();
+  addMessage("file", { type:"time", text:times.final });
+  addMessage("file", { type:"out", text:"我好像记起他的名字了，好像叫Shen Heng，我不知道这两个字咋写，不过我有印象，他是个很好的人。我的家人。" });
+  audio.currentTime = 0;
+  audio.play().catch(() => {});
+  scheduleSusuStart(10000);
+}
+function scheduleSusuStart(delay) {
+  if (state.susuStarted) return;
+  window.setTimeout(startSusuConversation, Math.max(0, delay));
+}
+function startSusuConversation() {
+  if (state.susuStarted) return;
+  state.susuStarted = true;
+  state.susuStep = 0;
+  addMessage("susu", { type:"time", text:times.final });
+  playSusuStage(0);
+}
+function playSusuStage(index) {
+  const stage = susuFlow[index];
+  if (!stage) return;
+  if (incomingTimer) window.clearTimeout(incomingTimer);
+  state.readyChoice = "";
+  state.draftChoice = "";
+  state.choiceTyping = false;
+  state.typing = false;
+  saveState();
+  if (!stage.incoming.length) {
+    beginReplyDraft(stage.choice || "");
+    return;
+  }
+  let cursor = 0;
+  const next = () => {
+    if (cursor >= stage.incoming.length) {
+      state.typing = false;
+      if (stage.episode) addMessage("susu", { type:"episode", text:stage.episode });
+      if (stage.episode && !stage.choice) state.susuComplete = true;
+      beginReplyDraft(stage.choice || "");
+      return;
+    }
+    state.typing = true;
+    renderChat();
+    const text = stage.incoming[cursor];
+    const delay = 760 + Math.min(1200, text.length * 18);
+    incomingTimer = window.setTimeout(() => {
+      state.typing = false;
+      cursor += 1;
+      addMessage("susu", { type:"in", text });
+      incomingTimer = window.setTimeout(next, 420);
+    }, delay);
+  };
+  next();
+}
+function beginReplyDraft(text) {
+  if (replyTypingTimer) window.clearTimeout(replyTypingTimer);
+  state.readyChoice = text;
+  state.draftChoice = "";
+  state.choiceTyping = Boolean(text);
+  saveState();
+  renderChat();
+  if (!text) return;
+  let index = 0;
+  const tick = () => {
+    index += 1;
+    state.draftChoice = text.slice(0, index);
+    if (state.activeChat === "susu") updateInput();
+    if (index < text.length) {
+      replyTypingTimer = window.setTimeout(tick, 46);
+      return;
+    }
+    state.choiceTyping = false;
+    saveState();
+    renderChat();
+  };
+  replyTypingTimer = window.setTimeout(tick, 180);
+}
+function sendCurrentMessage() {
+  if (state.activeChat === "file") {
+    startRecord();
+    return;
+  }
+  if (!state.readyChoice || state.typing) return;
+  const text = state.readyChoice;
+  state.readyChoice = "";
+  state.draftChoice = "";
+  state.choiceTyping = false;
+  addMessage("susu", { type:"out", text });
+  state.susuStep += 1;
+  saveState();
+  playSusuStage(state.susuStep);
+}
+function renderMoments() {
+  const list = document.querySelector("#momentsList");
+  list.innerHTML = moments.map((moment) => `
+    <div class="moment">
+      <span class="avatar" style="background-image:url('${avatars.susu}')"></span>
+      <div class="moment-main">
+        <div class="moment-name">苏苏</div>
+        <div class="moment-text">${escapeHtml(moment.text)}</div>
+        ${moment.photos ? `<div class="moment-photos">${moment.photos.map((photo) => `<img src="${photo}" alt="">`).join("")}</div>` : ""}
+        <div class="moment-time">${escapeHtml(moment.time)}</div>
+      </div>
+    </div>
+  `).join("");
+}
+function openMoments() {
+  document.querySelector("#momentsModal").classList.add("open");
+  document.querySelector("#momentsModal").setAttribute("aria-hidden", "false");
+}
+function closeMoments() {
+  document.querySelector("#momentsModal").classList.remove("open");
+  document.querySelector("#momentsModal").setAttribute("aria-hidden", "true");
+}
+
+document.querySelectorAll("[data-chat]").forEach((button) => button.addEventListener("click", () => switchChat(button.dataset.chat)));
+sendButton.addEventListener("click", sendCurrentMessage);
+chatInput.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" || event.shiftKey) return;
+  event.preventDefault();
+  if (!sendButton.disabled) sendCurrentMessage();
+});
+document.querySelector("#openMomentsTop").addEventListener("click", openMoments);
+document.querySelector("#closeMoments").addEventListener("click", closeMoments);
+document.querySelector("#momentsModal").addEventListener("click", (event) => {
+  if (event.target.id === "momentsModal") closeMoments();
+});
+
+renderMoments();
+renderChat();
+if (state.recorded && !state.susuStarted) {
+  scheduleSusuStart(10000 - (Date.now() - Number(state.recordedAt || 0)));
+}
+if (state.susuStarted && !state.susuComplete && !state.readyChoice) {
+  window.setTimeout(() => playSusuStage(state.susuStep), 500);
+}
+</script>
+</body>
+</html>

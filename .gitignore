@@ -1,0 +1,22 @@
+.DS_Store
+**/.DS_Store
+
+# Raw generation sheets kept locally; not needed by the playable build.
+99-附件/assets/**/_source_sheets/
+
+# Build notes, contact sheets, candidates, and visual previews are local-only.
+99-附件/assets/**/_*/
+99-附件/assets/**/_*
+
+# Old clue test images, not referenced by the playable build.
+99-附件/assets/clues/1bit/analysisTest*-1bit.png
+99-附件/assets/clues/1bit/analysisMergedTest-1bit.png
+
+# Local planning, drafts, notes, and design sources.
+.obsidian/
+01-设计/
+02-记忆/
+03-剧本稿/
+04-测试/
+99-附件/ui高保真/
+文本效果建议.md
