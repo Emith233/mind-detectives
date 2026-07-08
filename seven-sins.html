@@ -495,6 +495,140 @@ button, textarea, input { font:inherit; }
     padding:8px 14px;
   }
 }
+@media (max-width:560px) {
+  .wx-container {
+    flex-direction:column;
+    width:100vw;
+    height:100dvh;
+  }
+  .wx-side {
+    width:100%;
+    min-width:0;
+    height:72px;
+    min-height:72px;
+    flex-direction:row;
+    border-right:0;
+    border-bottom:1px solid #dfe4e4;
+  }
+  .wx-side .header {
+    width:54px;
+    height:72px;
+    padding:10px;
+    border-bottom:0;
+    border-right:1px solid #e5e9e9;
+  }
+  .chat-list {
+    flex:1;
+    display:flex;
+    overflow-x:auto;
+    overflow-y:hidden;
+  }
+  .wx-chat-item {
+    width:68px;
+    min-width:68px;
+    height:72px;
+    padding:8px;
+    border-bottom:0;
+    border-right:1px solid #edf0f0;
+  }
+  .wx-chat-item .avatar {
+    width:42px;
+    height:42px;
+  }
+  .red-dot {
+    top:12px;
+    left:43px;
+  }
+  .wx-main {
+    flex:1;
+    min-height:0;
+  }
+  .chat-header {
+    height:48px;
+    min-height:48px;
+    padding:10px 12px;
+  }
+  .chat-header .name {
+    font-size:14px;
+  }
+  .chat-header .hint {
+    max-width:38vw;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .chat-body {
+    flex:1;
+    min-height:0;
+    padding:12px 10px 14px;
+    gap:12px;
+  }
+  .wx-msg,
+  .wx-msg.out {
+    max-width:94%;
+  }
+  .wx-msg .avatar {
+    width:32px;
+    height:32px;
+  }
+  .wx-msg .bubble {
+    padding:8px 11px;
+    font-size:13px;
+    line-height:1.62;
+  }
+  .wx-episode-sep {
+    max-width:92%;
+    padding:9px 12px;
+    font-size:12px;
+  }
+  .wx-episode-sep::before,
+  .wx-episode-sep::after {
+    width:10px;
+    margin-inline:5px;
+  }
+  .chat-input {
+    min-height:54px;
+    padding:8px;
+    align-items:center;
+  }
+  .chat-input textarea {
+    min-height:36px;
+    max-height:72px;
+    padding:8px 10px;
+    font-size:13px;
+  }
+  .send-btn {
+    min-width:56px;
+    padding:8px 10px;
+  }
+  .moments-modal {
+    padding:10px;
+  }
+  .moments-window {
+    width:100%;
+    max-height:calc(100dvh - 20px);
+    border-radius:6px;
+  }
+  .moments-head {
+    padding:12px 14px;
+  }
+  .moment {
+    gap:9px;
+    padding:13px 12px;
+  }
+  .moment .avatar {
+    width:36px;
+    height:36px;
+  }
+  .moment-text {
+    font-size:13px;
+    line-height:1.62;
+  }
+  .moment-photos img {
+    width:min(88px, 26vw);
+    height:min(88px, 26vw);
+  }
+}
 </style>
 </head>
 <body>

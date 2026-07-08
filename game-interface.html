@@ -3731,18 +3731,19 @@
 
       .left-stack {
         grid-template-columns: 1fr;
-        grid-template-rows: auto 64px;
+        grid-template-rows: minmax(0, 1fr) 64px;
+        height: clamp(400px, 50svh, 520px);
       }
 
       .display-card {
-        height: auto;
+        height: 100%;
         padding: 14px;
         gap: 12px;
         min-height: 0;
       }
 
       .panel-body {
-        height: auto;
+        height: 100%;
       }
 
       .visual-layout {
@@ -3862,6 +3863,7 @@
 
       body.mobile-operation-mode .left-stack {
         grid-template-rows: auto 64px;
+        height: auto;
       }
 
       .personality-selection {
@@ -3902,6 +3904,12 @@
     }
 
     @media (max-width: 720px) {
+      .title-screen {
+        place-items: start center;
+        padding: max(14px, env(safe-area-inset-top)) 14px max(14px, env(safe-area-inset-bottom));
+        overflow-y: auto;
+      }
+
       .game-shell {
         width: 100vw;
         height: auto;
@@ -3914,7 +3922,8 @@
 
       .left-stack {
         grid-template-columns: 1fr;
-        grid-template-rows: auto 52px;
+        grid-template-rows: minmax(0, 1fr) 52px;
+        height: clamp(386px, 46svh, 460px);
         gap: 8px;
       }
 
@@ -3923,6 +3932,7 @@
       }
 
       .display-card {
+        height: 100%;
         padding: 10px;
         gap: 8px;
         grid-template-rows: auto auto auto;
@@ -4222,8 +4232,10 @@
       }
 
       .title-card {
-        min-height: min(560px, 82dvh);
+        width: min(430px, 100%);
+        min-height: min(560px, calc(100svh - 28px));
         padding: 22px;
+        gap: 18px;
       }
 
       .title-name {
@@ -4232,8 +4244,16 @@
 
       .title-signal {
         width: min(460px, 82vw);
-        height: 94px;
-        gap: 13px;
+        height: auto;
+      }
+
+      .title-menu {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .title-button {
+        min-height: 44px;
       }
 
       .clue-list {
