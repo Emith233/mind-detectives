@@ -554,7 +554,7 @@ button, textarea, input { font:inherit; }
   </div>
 </div>
 
-  <audio id="endingAudio" src="99-附件/assets/audio/结尾.mp3" preload="none"></audio>
+  <audio id="endingAudio" src="99-附件/assets/audio/结尾.mp3" preload="auto"></audio>
 
 <script>
 const SAVE_KEY = "brain-detective-wechat-e03-v1";
@@ -605,7 +605,7 @@ const susuFlow = [
 const moments = [
   {
     time:"2026-07-06 18:42",
-    text:"不知道为什么晕倒在了砀山，我的寻人之旅被迫到此为止了，还被我妈凶了一顿！！明天出院我也接着写我喜欢的小说！！！！"
+    text:"不知道为什么晕倒在了砀山，我的寻人之旅被迫到此为止了，还被我妈凶了一顿！！明天出院我要接着写我喜欢的小说！！！！"
   },
   {
     time:"2026-06-26 13:18",
@@ -631,6 +631,7 @@ const chatInput = document.querySelector("#chatInput");
 const sendButton = document.querySelector("#sendButton");
 const momentsTopButton = document.querySelector("#openMomentsTop");
 const audio = document.querySelector("#endingAudio");
+audio?.load();
 let state = loadState();
 let incomingTimer = null;
 let replyTypingTimer = null;
