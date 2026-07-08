@@ -8959,8 +8959,7 @@
     }
 
     function addClueInfo(key, text) {
-      if (!clues[key] || hasClueInfo(key)) return false;
-      consumedClueKeys = consumedClueKeys.filter((item) => item !== key);
+      if (!clues[key] || hasClueInfo(key) || hasConsumedClue(key)) return false;
       runClueKeys.push(key);
       if (text) appendStoryLine(text, { info: true });
       return true;
