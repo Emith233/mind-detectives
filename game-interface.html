@@ -7586,7 +7586,7 @@
       if (visibleMemoryKeys().length > 0) keys.push("memories");
       if (DEBUG_UNLOCK_ALL_COLLECTIONS) keys.push(...allRegularClueKeys());
       [...persistentClueKeys, ...runClueKeys].forEach((key) => {
-        if (key !== "people" && key !== "memories" && clues[key]) keys.push(key);
+        if (key !== "people" && key !== "memories" && clues[key] && !consumedClueKeys.includes(key)) keys.push(key);
       });
       return [...new Set(keys)];
     }
@@ -11686,7 +11686,8 @@
     }
 
     function consumeClueInfo(key) {
-      removeClueInfo(key);
+      // 仅从 runClueKeys 移除，不动 persistentClueKeys（保留跨轮次状态）
+      runClueKeys = runClueKeys.filter((item) => item !== key);
       if (!consumedClueKeys.includes(key)) consumedClueKeys.push(key);
     }
 
@@ -12766,12 +12767,6 @@
 
       if (!wasCompleted) {
         savedRecords = savedRecords.filter((record) => record.persistent);
-        // 未完成流程重演：合成结果保留 + 已消耗材料恢复
-        [...new Set([...runClueKeys, ...consumedClueKeys])].forEach((key) => {
-          if (clues[key] && !persistentClueKeys.includes(key)) {
-            persistentClueKeys.push(key);
-          }
-        });
         consumedClueKeys = [];
         renderRecords();
       }
