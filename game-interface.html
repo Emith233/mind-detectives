@@ -8959,7 +8959,8 @@
     }
 
     function addClueInfo(key, text) {
-      if (!clues[key] || hasClueInfo(key) || hasConsumedClue(key)) return false;
+      if (!clues[key] || hasClueInfo(key)) return false;
+      consumedClueKeys = consumedClueKeys.filter((item) => item !== key);
       runClueKeys.push(key);
       if (text) appendStoryLine(text, { info: true });
       return true;
@@ -12820,6 +12821,12 @@
         runClueKeys = Array.isArray(saved.runClueKeys) ? saved.runClueKeys : [];
         persistentClueKeys = Array.isArray(saved.persistentClueKeys) ? saved.persistentClueKeys : [];
         consumedClueKeys = Array.isArray(saved.consumedClueKeys) ? saved.consumedClueKeys : [];
+        if (consumedClueKeys.includes("revengeForSumian")) {
+          consumedClueKeys = consumedClueKeys.filter((key) => key !== "revengeForSumian");
+          if (!runClueKeys.includes("revengeForSumian") && !persistentClueKeys.includes("revengeForSumian")) {
+            runClueKeys = [...runClueKeys, "revengeForSumian"];
+          }
+        }
         if (Array.isArray(saved.runPersonKeys) || Array.isArray(saved.persistentPersonKeys)) {
           runPersonKeys = Array.isArray(saved.runPersonKeys) ? saved.runPersonKeys : [];
           persistentPersonKeys = Array.isArray(saved.persistentPersonKeys) ? saved.persistentPersonKeys : [];
