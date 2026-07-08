@@ -12922,10 +12922,6 @@
         runClueKeys = Array.isArray(saved.runClueKeys) ? saved.runClueKeys : [];
         persistentClueKeys = Array.isArray(saved.persistentClueKeys) ? saved.persistentClueKeys : [];
         consumedClueKeys = Array.isArray(saved.consumedClueKeys) ? saved.consumedClueKeys : [];
-        // 丢失线索恢复：已通关但为苏眠复仇不在任何线索列表中时补回
-        if (savedCompletedOnce && clues["revengeForSumian"] && !runClueKeys.includes("revengeForSumian") && !persistentClueKeys.includes("revengeForSumian") && !consumedClueKeys.includes("revengeForSumian")) {
-          persistentClueKeys.push("revengeForSumian");
-        }
         if (Array.isArray(saved.runPersonKeys) || Array.isArray(saved.persistentPersonKeys)) {
           runPersonKeys = Array.isArray(saved.runPersonKeys) ? saved.runPersonKeys : [];
           persistentPersonKeys = Array.isArray(saved.persistentPersonKeys) ? saved.persistentPersonKeys : [];
