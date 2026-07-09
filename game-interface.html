@@ -4,12 +4,24 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>脑中神探</title>
-  <link rel="preload" href="99-附件/assets/fonts/fusion-pixel-12px-monospaced-zh_hans.ttf.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="99-%E9%99%84%E4%BB%B6/assets/fonts/fusion-pixel-12px-monospaced-zh_hans.ttf.woff2" as="font" type="font/woff2">
   <link rel="preload" href="99-附件/assets/audio/ChongErFei.mp3" as="audio" type="audio/mpeg">
   <style>
     @font-face {
       font-family: "Fusion Pixel Game";
-      src: url("99-附件/assets/fonts/fusion-pixel-12px-monospaced-zh_hans.ttf.woff2") format("woff2");
+      src:
+        url("99-%E9%99%84%E4%BB%B6/assets/fonts/fusion-pixel-12px-monospaced-zh_hans.ttf.woff2") format("woff2"),
+        url("99-附件/assets/fonts/fusion-pixel-12px-monospaced-zh_hans.ttf.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Fusion Pixel 12px Monospaced SC";
+      src:
+        url("99-%E9%99%84%E4%BB%B6/assets/fonts/fusion-pixel-12px-monospaced-zh_hans.ttf.woff2") format("woff2"),
+        url("99-附件/assets/fonts/fusion-pixel-12px-monospaced-zh_hans.ttf.woff2") format("woff2");
       font-weight: 400;
       font-style: normal;
       font-display: swap;
@@ -39,6 +51,7 @@
       --weichi: #45d7ff;
       --peihuan: #c084fc;
       --shenheng: #7aa7ff;
+      --terminal-green: #4af626;
       --scrollbar-thumb: #343434;
       --scrollbar-track: #090909;
       --font-terminal:
@@ -64,6 +77,34 @@
         "Courier New",
         "SimSun",
         monospace;
+    }
+
+    body.theme-light {
+      --bg-main: #f5f4ec;
+      --bg-panel: #faf9f1;
+      --bg-terminal: #fdfcf5;
+      --text-main: #20201d;
+      --text-sub: #3f3f39;
+      --text-dialogue: #141414;
+      --text-muted: #68665d;
+      --border-main: #2b2a25;
+      --line-soft: rgba(32, 32, 29, 0.2);
+      --terminal-accent: #20201d;
+      --terminal-accent-soft: rgba(32, 32, 29, 0.075);
+      --terminal-grid: rgba(32, 32, 29, 0.025);
+      --terminal-glow: rgba(32, 32, 29, 0.08);
+      --select-mark: rgba(32, 32, 29, 0.82);
+      --select-bg: rgba(32, 32, 29, 0.055);
+      --scrollbar-thumb: #aba89b;
+      --scrollbar-track: #ebe9de;
+      --luxuo: #d23238;
+      --tangmi: #a56800;
+      --liangzhou: #8a7300;
+      --wenci: #137a47;
+      --weichi: #087394;
+      --peihuan: #7c3ab7;
+      --shenheng: #2d58b7;
+      --terminal-green: #168000;
     }
 
     * {
@@ -94,6 +135,14 @@
       color-scheme: dark;
       scrollbar-width: thin;
       scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+    }
+
+    body.theme-light .clue-list,
+    body.theme-light .story-view,
+    body.theme-light .records-list,
+    body.theme-light .person-detail,
+    body.theme-light .person-info-list {
+      color-scheme: light;
     }
 
     .clue-list::-webkit-scrollbar,
@@ -164,11 +213,30 @@
       font-smooth: never;
     }
 
+    body.theme-light {
+      color-scheme: light;
+      background:
+        radial-gradient(circle at 50% 32%, rgba(32, 32, 29, 0.026), transparent 48%),
+        radial-gradient(circle at 50% 50%, transparent 58%, rgba(32, 32, 29, 0.055) 100%),
+        repeating-linear-gradient(0deg, rgba(32, 32, 29, 0.018) 0 1px, transparent 1px 5px),
+        var(--bg-main);
+      text-shadow: none;
+    }
+
+    button,
+    input,
+    textarea,
+    select,
+    pre {
+      font-family: var(--font-terminal);
+    }
+
     html.font-pixel-ready body,
     html.font-pixel-ready button,
     html.font-pixel-ready input,
     html.font-pixel-ready textarea,
-    html.font-pixel-ready select {
+    html.font-pixel-ready select,
+    html.font-pixel-ready pre {
       font-family:
         "Fusion Pixel Game",
         "Fusion Pixel 12px Monospaced SC",
@@ -190,6 +258,14 @@
       animation: crt-pulse 5.5s steps(3, end) infinite;
     }
 
+    body.theme-light::before {
+      background:
+        linear-gradient(rgba(32, 32, 29, 0.01), rgba(32, 32, 29, 0.002) 47%, rgba(255, 255, 255, 0.08) 53%, rgba(255, 255, 255, 0.01)),
+        repeating-linear-gradient(90deg, rgba(32, 32, 29, 0.01) 0 1px, transparent 1px 4px);
+      mix-blend-mode: multiply;
+      opacity: 0.24;
+    }
+
     body::after {
       position: fixed;
       inset: 0;
@@ -201,6 +277,14 @@
         inset 0 0 30px rgba(255, 255, 255, 0.075),
         inset 0 0 92px rgba(0, 0, 0, 0.88),
         0 0 18px rgba(255, 255, 255, 0.06);
+    }
+
+    body.theme-light::after {
+      border-color: rgba(32, 32, 29, 0.22);
+      box-shadow:
+        inset 0 0 18px rgba(32, 32, 29, 0.035),
+        inset 0 0 64px rgba(255, 255, 255, 0.58),
+        0 0 10px rgba(32, 32, 29, 0.04);
     }
 
     @keyframes crt-pulse {
@@ -224,6 +308,12 @@
       background:
         linear-gradient(90deg, rgba(255, 255, 255, 0.018), transparent 28%, transparent 72%, rgba(255, 255, 255, 0.014)),
         rgba(0, 0, 0, 0.34);
+    }
+
+    body.theme-light .game-shell {
+      background:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.018), transparent 28%, transparent 72%, rgba(0, 0, 0, 0.014)),
+        rgba(255, 255, 255, 0.48);
     }
 
     .left-stack {
@@ -251,6 +341,18 @@
       overflow: hidden;
     }
 
+    body.theme-light .panel {
+      background:
+        linear-gradient(180deg, rgba(0, 0, 0, 0.026), transparent 26%),
+        repeating-linear-gradient(90deg, var(--terminal-grid) 0 1px, transparent 1px 8px),
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.014) 0 1px, transparent 1px 6px),
+        var(--bg-terminal);
+      box-shadow:
+        inset 0 0 0 1px rgba(0, 0, 0, 0.06),
+        inset 0 0 18px rgba(0, 0, 0, 0.018),
+        0 0 16px rgba(0, 0, 0, 0.05);
+    }
+
     .panel-body {
       height: 100%;
       padding: 16px 18px 18px;
@@ -267,6 +369,12 @@
       background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 32%),
         rgba(0, 0, 0, 0.12);
+    }
+
+    body.theme-light .display-card {
+      background:
+        linear-gradient(180deg, rgba(0, 0, 0, 0.018), transparent 32%),
+        rgba(255, 255, 255, 0.24);
     }
 
     .case-heading {
@@ -304,6 +412,92 @@
         linear-gradient(90deg, rgba(255, 255, 255, 0.045), transparent 42%),
         repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 5px),
         #020202;
+    }
+
+    body.theme-light .visual-frame {
+      background:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.045), transparent 42%),
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.018) 0 1px, transparent 1px 5px),
+        #f9f9f4;
+    }
+
+    body.theme-light .case-heading,
+    body.theme-light .detective-status-name,
+    body.theme-light .clue-item,
+    body.theme-light .story-line,
+    body.theme-light .story-speaker-label,
+    body.theme-light .record-speaker-label,
+    body.theme-light .route-entry-name,
+    body.theme-light .memory-resolution-flash,
+    body.theme-light .phase-cover-title,
+    body.theme-light .phase-cover-subtitle,
+    body.theme-light .phase-cover-status {
+      text-shadow: none;
+    }
+
+    body.theme-light .story-line.is-adult-command,
+    body.theme-light .story-line.is-warm-memory,
+    body.theme-light .story-line.is-first-contact,
+    body.theme-light .story-line.is-bright-insist,
+    body.theme-light .story-line.is-quiet-decision,
+    body.theme-light .story-line.is-password-shadow,
+    body.theme-light .story-line.is-afterword-soft {
+      color: var(--text-main);
+    }
+
+    body.theme-light .story-line.is-cold-observe,
+    body.theme-light .story-line.is-cold-note {
+      color: #344457;
+    }
+
+    body.theme-light .ascii-art,
+    body.theme-light .person-portrait pre,
+    body.theme-light .submission-preview pre {
+      color: #20201d;
+      text-shadow: none;
+      filter: contrast(1.08);
+    }
+
+    body.theme-light .ascii-art.is-wide {
+      color: rgba(32, 32, 29, 0.88);
+    }
+
+    body.theme-light .visual-copy,
+    body.theme-light .visual-note,
+    body.theme-light .display-interaction,
+    body.theme-light .personality-selection-title,
+    body.theme-light .submission-terminal-title,
+    body.theme-light .submission-preview-title,
+    body.theme-light .records-title {
+      color: var(--text-main);
+      text-shadow: none;
+    }
+
+    body.theme-light .visual-tags,
+    body.theme-light .submission-terminal-footer,
+    body.theme-light .submission-preview-meta,
+    body.theme-light .submission-preview-note,
+    body.theme-light .record-meta,
+    body.theme-light .memory-list-status,
+    body.theme-light .empty-records {
+      color: var(--text-sub);
+      text-shadow: none;
+    }
+
+    body.theme-light .story-line.is-latest,
+    body.theme-light .choice-button.is-picked,
+    body.theme-light .person-info-card.is-active,
+    body.theme-light .personality-card.is-picked,
+    body.theme-light .clue-item.is-active {
+      background:
+        linear-gradient(90deg, rgba(32, 32, 29, 0.075), rgba(32, 32, 29, 0.032));
+      box-shadow:
+        inset 4px 0 0 var(--select-mark),
+        inset -4px 0 0 var(--select-mark);
+    }
+
+    body.theme-light .story-line.is-latest {
+      border-color: rgba(32, 32, 29, 0.3);
     }
 
     .visual-frame::before {
@@ -861,6 +1055,33 @@
       background: var(--terminal-accent-soft);
     }
 
+    body.theme-light .title-screen,
+    body.theme-light .ending-screen {
+      background:
+        radial-gradient(circle at 50% 38%, rgba(32, 32, 29, 0.045), transparent 42%),
+        repeating-linear-gradient(0deg, rgba(32, 32, 29, 0.018) 0 1px, transparent 1px 5px),
+        var(--bg-main);
+    }
+
+    body.theme-light .title-name {
+      color: var(--text-main);
+      text-shadow: none;
+    }
+
+    body.theme-light .title-button:disabled {
+      border-color: rgba(32, 32, 29, 0.2);
+      color: var(--text-muted);
+    }
+
+    body.theme-light .title-button:hover:not(:disabled),
+    body.theme-light .title-button:focus-visible:not(:disabled),
+    body.theme-light .ending-button:hover,
+    body.theme-light .ending-button:focus-visible,
+    body.theme-light .wake-button:hover,
+    body.theme-light .wake-button:focus-visible {
+      outline-color: rgba(32, 32, 29, 0.72);
+    }
+
     .ending-screen {
       z-index: 90;
       place-items: center;
@@ -1195,6 +1416,11 @@
       overflow: hidden;
     }
 
+    body.theme-light .submission-preview {
+      border-color: rgba(32, 32, 29, 0.24);
+      background: rgba(255, 255, 255, 0.5);
+    }
+
     .submission-preview.is-empty {
       grid-template-columns: 1fr;
       grid-template-rows: 1fr;
@@ -1219,6 +1445,12 @@
       font-size: clamp(3px, 0.42vw, 7px);
       line-height: 1.03;
       image-rendering: pixelated;
+    }
+
+    body.theme-light .submission-preview img,
+    body.theme-light .submission-preview pre {
+      border-color: rgba(32, 32, 29, 0.22);
+      background: #f7f6ee;
     }
 
     .submission-preview-title {
@@ -1345,6 +1577,13 @@
       box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.032);
     }
 
+    body.theme-light .person-combined-file {
+      background:
+        linear-gradient(180deg, rgba(32, 32, 29, 0.026), transparent 38%),
+        #f7f6ee;
+      box-shadow: inset 0 0 14px rgba(32, 32, 29, 0.03);
+    }
+
     .person-combined-file pre {
       margin: 0;
       white-space: pre-wrap;
@@ -1357,6 +1596,11 @@
       text-shadow: 0 0 8px currentColor;
     }
 
+    body.theme-light .person-combined-file pre {
+      color: var(--text-main);
+      text-shadow: none;
+    }
+
     .person-portrait {
       min-height: 0;
       border: 1px solid var(--border-main);
@@ -1365,6 +1609,11 @@
       overflow: hidden;
       background: #020202;
       box-shadow: inset 0 0 16px rgba(255, 255, 255, 0.028);
+    }
+
+    body.theme-light .person-portrait {
+      background: #f7f6ee;
+      box-shadow: inset 0 0 14px rgba(32, 32, 29, 0.03);
     }
 
     .person-portrait pre {
@@ -1381,6 +1630,10 @@
       max-height: 100%;
       overflow: hidden;
       text-shadow: 0 0 7px currentColor;
+    }
+
+    body.theme-light .person-ascii {
+      text-shadow: none;
     }
 
     .person-portrait .person-empty-state {
@@ -1409,6 +1662,12 @@
       overflow: hidden;
       background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.024), transparent 34%),
+        var(--bg-panel);
+    }
+
+    body.theme-light .person-detail-shell {
+      background:
+        linear-gradient(180deg, rgba(32, 32, 29, 0.02), transparent 34%),
         var(--bg-panel);
     }
 
@@ -1480,6 +1739,26 @@
       color: var(--terminal-green, #4af626);
       text-shadow: 0 0 8px rgba(74, 246, 38, 0.42);
       box-shadow: 0 0 12px rgba(74, 246, 38, 0.14), inset 0 0 12px rgba(74, 246, 38, 0.08);
+    }
+
+    body.theme-light .seven-sin-input {
+      border-color: rgba(32, 32, 29, 0.34);
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--text-main);
+      box-shadow: inset 0 0 0 1px rgba(32, 32, 29, 0.035);
+      text-shadow: none;
+    }
+
+    body.theme-light .seven-sin-input:focus-visible {
+      border-color: var(--border-main);
+      box-shadow: 0 0 0 1px rgba(32, 32, 29, 0.16), inset 0 0 10px rgba(32, 32, 29, 0.045);
+    }
+
+    body.theme-light .seven-sin-input.is-correct {
+      border-color: var(--terminal-green);
+      color: var(--terminal-green);
+      text-shadow: none;
+      box-shadow: 0 0 0 1px rgba(22, 128, 0, 0.16), inset 0 0 10px rgba(22, 128, 0, 0.08);
     }
 
     .seven-sin-hint {
@@ -1901,6 +2180,24 @@
         rgba(0, 0, 0, 0.42);
     }
 
+    body.theme-light .text-tools {
+      background:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.055), rgba(255, 255, 255, 0.62) 28%),
+        rgba(255, 255, 255, 0.54);
+    }
+
+    body.theme-light .radio-open.is-playing,
+    body.theme-light .new-text-cue.is-active,
+    body.theme-light .tiny-button.is-skip-active {
+      color: var(--terminal-green);
+      border-color: var(--terminal-green);
+      background: rgba(22, 128, 0, 0.1);
+      box-shadow:
+        inset 0 0 0 1px rgba(22, 128, 0, 0.18),
+        0 0 0 1px rgba(22, 128, 0, 0.08);
+      text-shadow: none;
+    }
+
     .detective-status {
       min-width: 0;
       margin-right: auto;
@@ -1948,8 +2245,22 @@
       order: 5;
     }
 
-    #mobile-tools-toggle {
+    #theme-toggle {
       order: 6;
+      min-width: 32px;
+      width: 32px;
+      padding: 0;
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    #theme-toggle[aria-pressed="true"] {
+      background: var(--select-bg);
+      box-shadow: inset 3px 0 0 var(--select-mark), inset -3px 0 0 var(--select-mark);
+    }
+
+    #mobile-tools-toggle {
+      order: 7;
     }
 
     @media (max-width: 1180px), (hover: none) and (pointer: coarse) {
@@ -1982,7 +2293,8 @@
       #mobile-tools-toggle,
       #radio-open,
       #route-btn,
-      #records-toggle {
+      #records-toggle,
+      #theme-toggle {
         min-width: 0;
       }
 
@@ -2002,12 +2314,16 @@
         order: 4;
       }
 
-      #route-btn {
+      #theme-toggle {
         order: 5;
       }
 
-      #records-toggle {
+      #route-btn {
         order: 6;
+      }
+
+      #records-toggle {
+        order: 7;
       }
 
       .mobile-tools-toggle {
@@ -2016,12 +2332,14 @@
       }
 
       #radio-open,
+      #theme-toggle,
       #route-btn,
       #records-toggle {
         display: none;
       }
 
       .text-tools.is-mobile-open #radio-open,
+      .text-tools.is-mobile-open #theme-toggle,
       .text-tools.is-mobile-open #route-btn,
       .text-tools.is-mobile-open #records-toggle {
         display: inline-grid;
@@ -2042,6 +2360,13 @@
         repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 8px),
         rgba(0, 0, 0, 0.94);
       box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05), 0 0 22px rgba(0, 0, 0, 0.72);
+    }
+
+    body.theme-light .radio-panel {
+      background:
+        repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.035) 0 1px, transparent 1px 8px),
+        rgba(255, 255, 255, 0.96);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 0 18px rgba(0, 0, 0, 0.14);
     }
 
     .radio-panel.is-open {
@@ -2120,6 +2445,11 @@
     .text-panel.is-choice-mode .choice-area {
       border-top-color: rgba(255, 255, 255, 0.72);
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    }
+
+    body.theme-light .text-panel.is-choice-mode .choice-area {
+      border-top-color: rgba(32, 32, 29, 0.42);
+      box-shadow: inset 0 1px 0 rgba(32, 32, 29, 0.08);
     }
 
     .text-panel.is-deduction-mode .story-view {
@@ -2231,6 +2561,16 @@
       box-shadow: inset 0 0 10px color-mix(in srgb, var(--speaker-color, var(--text-main)) 7%, transparent);
     }
 
+    body.theme-light .story-speaker-label,
+    body.theme-light .choice-speaker-label,
+    body.theme-light .record-speaker-label {
+      border-color: color-mix(in srgb, var(--speaker-color, var(--text-main)) 82%, transparent);
+      color: var(--speaker-color, var(--text-main));
+      background: color-mix(in srgb, var(--speaker-color, var(--text-main)) 8%, transparent);
+      text-shadow: none;
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--speaker-color, var(--text-main)) 8%, transparent);
+    }
+
     .story-line-body {
       min-width: 0;
     }
@@ -2334,6 +2674,13 @@
       color: var(--text-main);
       font-size: 0.92em;
       line-height: 1.5;
+    }
+
+    body.theme-light .story-line.is-deduction-question {
+      border-left-color: rgba(32, 32, 29, 0.7);
+      background:
+        linear-gradient(90deg, rgba(32, 32, 29, 0.085), rgba(32, 32, 29, 0.025) 68%, transparent);
+      box-shadow: inset 0 1px 0 rgba(32, 32, 29, 0.12), inset 0 -1px 0 rgba(32, 32, 29, 0.08);
     }
 
     .story-line.is-deduction-question.is-latest::before {
@@ -2714,6 +3061,14 @@
       box-shadow: inset 0 0 14px rgba(255, 255, 255, 0.06);
     }
 
+    body.theme-light .story-line.is-system-alert {
+      border-color: rgba(32, 32, 29, 0.48);
+      background:
+        repeating-linear-gradient(90deg, rgba(32, 32, 29, 0.05) 0 1px, transparent 1px 8px),
+        rgba(32, 32, 29, 0.04);
+      box-shadow: inset 0 0 10px rgba(32, 32, 29, 0.05);
+    }
+
     .story-line.is-cold-note {
       color: #cfd8e6;
       text-shadow: 0 0 8px rgba(122, 167, 255, 0.24);
@@ -3051,6 +3406,14 @@
         rgba(0, 0, 0, 0.58);
     }
 
+    body.theme-light .choice-area {
+      border-top-color: rgba(32, 32, 29, 0.28);
+      background:
+        linear-gradient(180deg, rgba(32, 32, 29, 0.045), rgba(255, 255, 255, 0.68) 34%),
+        rgba(244, 243, 235, 0.92);
+      box-shadow: inset 0 1px 0 rgba(32, 32, 29, 0.08);
+    }
+
     .choice-area.is-open {
       display: grid;
       gap: 9px;
@@ -3063,6 +3426,10 @@
     .choice-question {
       color: var(--text-sub);
       font-size: 15px;
+    }
+
+    body.theme-light .choice-question {
+      color: #4b4a43;
     }
 
     .choice-list {
@@ -3095,6 +3462,18 @@
       background: var(--terminal-accent-soft);
     }
 
+    body.theme-light .password-input {
+      border-color: var(--border-main);
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--text-main);
+      text-shadow: none;
+    }
+
+    body.theme-light .password-input:focus-visible {
+      outline-color: rgba(32, 32, 29, 0.7);
+      background: rgba(32, 32, 29, 0.055);
+    }
+
     .password-actions {
       display: grid;
       grid-template-columns: repeat(2, minmax(76px, auto));
@@ -3117,6 +3496,45 @@
       font: inherit;
       cursor: pointer;
       text-shadow: 0 0 5px rgba(255, 255, 255, 0.14);
+    }
+
+    body.theme-light .tiny-button,
+    body.theme-light .control-button,
+    body.theme-light .choice-button,
+    body.theme-light .delete-record {
+      border-color: rgba(32, 32, 29, 0.42);
+      background:
+        linear-gradient(180deg, rgba(0, 0, 0, 0.035), transparent 62%),
+        #fdfdf9;
+      text-shadow: none;
+    }
+
+    body.theme-light .choice-button {
+      background:
+        linear-gradient(90deg, rgba(32, 32, 29, 0.035), rgba(255, 255, 255, 0.86) 28%),
+        #fffef8;
+      box-shadow: inset 0 0 0 1px rgba(32, 32, 29, 0.035);
+    }
+
+    body.theme-light .choice-button:hover,
+    body.theme-light .choice-button:focus-visible {
+      outline-color: rgba(32, 32, 29, 0.72);
+      background:
+        linear-gradient(90deg, rgba(32, 32, 29, 0.075), rgba(255, 255, 255, 0.92) 34%),
+        #fffef8;
+      box-shadow: inset 4px 0 0 var(--select-mark), inset -4px 0 0 var(--select-mark);
+    }
+
+    body.theme-light .title-button,
+    body.theme-light .ending-button,
+    body.theme-light .wake-button,
+    body.theme-light .memory-order-button,
+    body.theme-light .route-star {
+      background:
+        linear-gradient(180deg, rgba(32, 32, 29, 0.04), transparent 64%),
+        #fdfcf5;
+      color: var(--text-main);
+      text-shadow: none;
     }
 
     .tiny-button {
@@ -3461,6 +3879,18 @@
       opacity: 0.48;
     }
 
+    body.theme-light .control-button.is-secret-waiting,
+    body.theme-light .choice-button:disabled,
+    body.theme-light .clue-item:disabled,
+    body.theme-light .person-info-card:disabled {
+      border-color: rgba(32, 32, 29, 0.2);
+      background:
+        repeating-linear-gradient(90deg, rgba(32, 32, 29, 0.035) 0 1px, transparent 1px 8px),
+        rgba(32, 32, 29, 0.025);
+      color: var(--text-muted);
+      text-shadow: none;
+    }
+
     .records-panel {
       position: absolute;
       inset: 50px 18px 18px;
@@ -3471,6 +3901,13 @@
         repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 5px),
         rgba(0, 0, 0, 0.96);
       box-shadow: 0 0 22px rgba(255, 255, 255, 0.09);
+    }
+
+    body.theme-light .records-panel {
+      background:
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.018) 0 1px, transparent 1px 5px),
+        rgba(255, 255, 255, 0.97);
+      box-shadow: 0 0 18px rgba(0, 0, 0, 0.1);
     }
 
     .records-panel.is-open {
@@ -3569,6 +4006,13 @@
       box-shadow: 0 0 22px rgba(255, 255, 255, 0.09);
     }
 
+    body.theme-light .route-panel {
+      background:
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.018) 0 1px, transparent 1px 5px),
+        rgba(255, 255, 255, 0.97);
+      box-shadow: 0 0 18px rgba(0, 0, 0, 0.1);
+    }
+
     .route-panel.is-open {
       display: grid;
       grid-template-rows: auto minmax(0, 1fr);
@@ -3662,6 +4106,17 @@
       line-height: 1.4;
     }
 
+    body.theme-light .route-note {
+      border-color: rgba(32, 32, 29, 0.24);
+      background: rgba(255, 255, 255, 0.66);
+      color: var(--text-main);
+      text-shadow: none;
+    }
+
+    body.theme-light .route-note::placeholder {
+      color: var(--text-muted);
+    }
+
     .route-note::placeholder {
       color: var(--text-muted);
     }
@@ -3701,6 +4156,11 @@
       grid-template-columns: 1fr 1fr;
       gap: 10px;
       border-top: 1px solid var(--border-main);
+    }
+
+    body.theme-light .text-controls {
+      background:
+        linear-gradient(180deg, rgba(32, 32, 29, 0.035), rgba(255, 255, 255, 0.48));
     }
 
     .control-button {
@@ -3803,6 +4263,10 @@
         min-width: 0;
       }
 
+      #theme-toggle {
+        min-width: 0;
+      }
+
       .detective-status {
         display: none;
       }
@@ -3828,15 +4292,20 @@
         order: 4;
       }
 
-      #route-btn {
+      #theme-toggle {
         order: 5;
       }
 
-      #records-toggle {
+      #route-btn {
         order: 6;
       }
 
+      #records-toggle {
+        order: 7;
+      }
+
       #radio-open,
+      #theme-toggle,
       #route-btn,
       #records-toggle {
         display: none;
@@ -3847,6 +4316,7 @@
       }
 
       .text-tools.is-mobile-open #radio-open,
+      .text-tools.is-mobile-open #theme-toggle,
       .text-tools.is-mobile-open #route-btn,
       .text-tools.is-mobile-open #records-toggle {
         display: inline-grid;
@@ -4310,7 +4780,8 @@
       #mobile-tools-toggle,
       #radio-open,
       #route-btn,
-      #records-toggle {
+      #records-toggle,
+      #theme-toggle {
         min-width: 0;
       }
 
@@ -4512,6 +4983,7 @@
         <button class="tiny-button" id="ff-mobile" type="button">▶ 快进</button>
         <button class="tiny-button" id="replay-button" type="button">重演</button>
         <button class="tiny-button mobile-tools-toggle" id="mobile-tools-toggle" type="button" aria-expanded="false">菜单</button>
+        <button class="tiny-button" id="theme-toggle" type="button" aria-label="切换为白底黑字" aria-pressed="false" title="切换为白底黑字">◐</button>
         <button class="tiny-button radio-open" id="radio-open" type="button">电台</button>
         <button class="tiny-button" id="route-btn" type="button">路线</button>
         <button class="tiny-button" id="records-toggle" type="button">记录</button>
@@ -4586,8 +5058,12 @@
     const SAVE_KEY = "arg-sys-case-01-save-v8";
     const WECHAT_E03_SAVE_KEY = "brain-detective-wechat-e03-v1";
     const START_NEW_KEY = "arg-sys-start-new-on-boot";
+    const THEME_KEY = "brain-detective-theme";
     let startNewOnBoot = sessionStorage.getItem(START_NEW_KEY) === "1";
     if (startNewOnBoot) sessionStorage.removeItem(START_NEW_KEY);
+    try {
+      if (localStorage.getItem(THEME_KEY) === "light") document.body.classList.add("theme-light");
+    } catch (error) {}
     const DEBUG_UNLOCK_ALL_COLLECTIONS = false;
     const detectiveProfiles = [
       { key: "shenheng", name: "沈衡", color: "#7aa7ff", intro: "镜子。你，或者我。" },
@@ -4606,6 +5082,16 @@
       shenheng: "#7aa7ff",
       shuyue: "#D8DEE9",
       ...Object.fromEntries(detectiveProfiles.map((profile) => [profile.key, profile.color]))
+    };
+    const lightPersonColors = {
+      shenheng: "#2d58b7",
+      shuyue: "#46505d",
+      luxuo: "#d23238",
+      wenci: "#137a47",
+      tangmi: "#a56800",
+      weichi: "#087394",
+      liangzhou: "#8a7300",
+      peihuan: "#7c3ab7"
     };
 
     const personAscii = {
@@ -7463,6 +7949,7 @@
     const resetButton = document.querySelector("#reset-button");
     const ffMobile = document.querySelector("#ff-mobile");
     const mobileToolsToggle = document.querySelector("#mobile-tools-toggle");
+    const themeToggle = document.querySelector("#theme-toggle");
     const secondLoopTestButton = document.querySelector("#second-loop-test");
     const firstLoopTestButton = document.querySelector("#first-loop-test");
     const routeBtn = document.querySelector("#route-btn");
@@ -7486,6 +7973,7 @@
     const endingScreen = document.querySelector("#ending-screen");
     const endingContent = document.querySelector("#ending-content");
     const endingContinueButton = document.querySelector("#ending-continue");
+    syncThemeToggle();
 
     const ENABLE_SPEAKER_LABELS = true;
     const ENABLE_TYPEWRITER = true;
@@ -7571,6 +8059,31 @@
       "shenheng-status-broken",
       "shenheng-controls-broken"
     ];
+
+    function isLightTheme() {
+      return document.body.classList.contains("theme-light");
+    }
+
+    function syncThemeToggle() {
+      if (!themeToggle) return;
+      const light = isLightTheme();
+      themeToggle.textContent = light ? "◑" : "◐";
+      themeToggle.setAttribute("aria-pressed", light ? "true" : "false");
+      themeToggle.setAttribute("aria-label", light ? "切换为黑底白字" : "切换为白底黑字");
+      themeToggle.title = light ? "切换为黑底白字" : "切换为白底黑字";
+    }
+
+    function setTheme(light) {
+      document.body.classList.toggle("theme-light", Boolean(light));
+      try {
+        localStorage.setItem(THEME_KEY, light ? "light" : "dark");
+      } catch (error) {}
+      syncThemeToggle();
+      renderStoryLines();
+      restoreChoiceIfNeeded();
+      renderRecords();
+      updateDetectiveStatus();
+    }
 
     function updateShenhengDamageUi() {
       document.body.classList.toggle("shenheng-visual-broken", Boolean(storyFlags.shenhengVisualBroken));
@@ -8817,6 +9330,11 @@
       return personColors[key] || "var(--text-main)";
     }
 
+    function displayPersonColor(key) {
+      if (isLightTheme()) return lightPersonColors[key] || personColor(key);
+      return personColor(key);
+    }
+
     function shouldTintPersonAscii(key) {
       return key === "shenheng" || key === "shuyue" || detectiveProfiles.some((profile) => profile.key === key);
     }
@@ -8883,7 +9401,7 @@
       return {
         name: match[1],
         key,
-        color: personColor(key),
+        color: displayPersonColor(key),
         body: raw.slice(match[0].length)
       };
     }
@@ -8922,7 +9440,7 @@
       }
       const key = speakerKeyFromText(text);
       if (!key) return escaped;
-      const color = personColor(key);
+      const color = displayPersonColor(key);
       return `<span style="color: ${color}">${escaped}</span>`;
     }
 
@@ -11062,11 +11580,11 @@
         <div class="person-info-layout">
           <div class="person-info-main${selectedKey === "shuyue" ? " is-single-file" : ""}">
             ${selectedKey === "shuyue" && person
-              ? `<div class="person-combined-file"><pre style="color: ${personColor("shuyue")}">${escapeHtml(person.detail)}</pre></div>
+              ? `<div class="person-combined-file"><pre style="color: ${displayPersonColor("shuyue")}">${escapeHtml(person.detail)}</pre></div>
                 ${canWakeShuyue() ? `<button class="wake-button" type="button" data-wake-shuyue>醒来</button>` : ""}`
               : `<div class="person-portrait">${
                   person
-                    ? `<pre class="person-ascii" style="color: ${shouldTintPersonAscii(selectedKey) ? personColor(selectedKey) : "var(--text-main)"}">${escapeHtml(personAscii[selectedKey] || person.art)}</pre>`
+                    ? `<pre class="person-ascii" style="color: ${shouldTintPersonAscii(selectedKey) ? displayPersonColor(selectedKey) : "var(--text-main)"}">${escapeHtml(personAscii[selectedKey] || person.art)}</pre>`
                     : `<pre class="person-empty-state">人物档案\n\n请选择右侧人物</pre>`
                 }</div>
                 <div class="person-detail-shell">
@@ -11112,7 +11630,7 @@
         const pre = document.createElement("pre");
         pre.className = person ? "person-ascii" : "person-empty-state";
         if (person) {
-          pre.style.color = shouldTintPersonAscii(selectedKey) ? personColor(selectedKey) : "var(--text-main)";
+          pre.style.color = shouldTintPersonAscii(selectedKey) ? displayPersonColor(selectedKey) : "var(--text-main)";
           pre.textContent = personAscii[selectedKey] || person.art;
         } else {
           pre.textContent = "人物档案\n\n请选择右侧人物";
@@ -11549,7 +12067,7 @@
         .map((key) => {
           const name = detectiveByKey[key]?.name;
           if (!name) return "";
-          return `<span class="detective-status-name" style="--status-color: ${personColor(key)}">${escapeHtml(name)}</span>`;
+          return `<span class="detective-status-name" style="--status-color: ${displayPersonColor(key)}">${escapeHtml(name)}</span>`;
         })
         .filter(Boolean);
       detectiveStatus.innerHTML = parts.length > 0 ? `人格：${parts.join(" / ")}` : "";
@@ -12525,6 +13043,9 @@
     ffMobile?.addEventListener("touchstart", (e) => { e.preventDefault(); startFF(); });
     ffMobile?.addEventListener("touchend", stopFF);
     ffMobile?.addEventListener("touchcancel", stopFF);
+    themeToggle?.addEventListener("click", () => {
+      setTheme(!isLightTheme());
+    });
     mobileToolsToggle?.addEventListener("click", () => {
       const willOpen = !textTools?.classList.contains("is-mobile-open");
       textTools?.classList.toggle("is-mobile-open", willOpen);
