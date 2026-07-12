@@ -9708,16 +9708,19 @@
       }
       if (entry.type === "inlineChoice") {
         showInlineChoice(entry);
+        updateContinueButton();
         saveGame();
         return true;
       }
       if (entry.type === "evidencePrompt") {
         showEvidencePrompt(entry);
+        updateContinueButton();
         saveGame();
         return true;
       }
       if (entry.type === "passwordPrompt") {
         showPasswordPrompt(entry);
+        updateContinueButton();
         saveGame();
         return true;
       }
@@ -9800,6 +9803,7 @@
         if (pendingLineQueue.length === 0 && shouldHandlePendingAfterQueueImmediately()) {
           handlePendingAfterQueue();
         }
+        updateContinueButton();
         saveGame();
         return true;
       }
@@ -9823,6 +9827,7 @@
             return true;
           }
           if (pendingLineQueue.length === 0) handlePendingAfterQueue();
+          updateContinueButton();
           saveGame();
           return true;
         }
@@ -9847,6 +9852,7 @@
       if (pendingLineQueue.length === 0 && shouldHandlePendingAfterQueueImmediately()) {
         handlePendingAfterQueue();
       }
+      updateContinueButton();
       saveGame();
       return true;
     }
@@ -11870,6 +11876,7 @@
       choiceArea.classList.add("is-open");
       textPanel.classList.add("is-choice-mode");
       storyView.classList.add("has-choice");
+      updateContinueButton();
       requestAnimationFrame(() => {
         storyView.style.paddingBottom = "10px";
         storyView.scrollTop = storyView.scrollHeight;
@@ -11896,6 +11903,7 @@
       choiceArea.classList.add("is-open");
       textPanel.classList.add("is-choice-mode");
       storyView.classList.add("has-choice");
+      updateContinueButton();
       requestAnimationFrame(() => {
         storyView.style.paddingBottom = "10px";
         storyView.scrollTop = storyView.scrollHeight;
@@ -11944,6 +11952,7 @@
       choiceArea.classList.add("is-open");
       textPanel.classList.add("is-choice-mode");
       storyView.classList.add("has-choice");
+      updateContinueButton();
       requestAnimationFrame(() => {
         storyView.style.paddingBottom = "10px";
         storyView.scrollTop = storyView.scrollHeight;
